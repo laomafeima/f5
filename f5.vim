@@ -85,3 +85,6 @@ function! F5#echo(msg)
     redraw
     echomsg "F5: " . a:msg
 endfunction
+
+command！ -nargs=0 F5run call F5#run()
+command！ -nargs=0 F5stop call F5#stop()
