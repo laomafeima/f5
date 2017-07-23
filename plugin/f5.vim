@@ -1,7 +1,8 @@
 " F5 快速运行
+exit
 
-nmap <silent> <F5> :call F5#run()<CR>; " F5 运行
-autocmd FileType qf nmap <silent> <C-C> :call F5#stop()<CR>; " QuickFix 框Ctrl C 停止异步运行
+nnoremap <silent> <F5> :call s:F5Run()<CR>; " F5 运行
+autocmd FileType qf nmap <silent> <C-C> :call s:F5Stop()<CR>; " QuickFix 框Ctrl C 停止异步运行
 autocmd FileType qf wincmd J " QuickFix 出现在最底部
 let F5#AutoSave = 1 " 运行时候是否自动保存
 let F5#ReturnFouce= 1 " 打开 QuickFix 时候是否返回原来窗口
@@ -24,7 +25,7 @@ let F5#RunFileBase = [
             \'dev_run.sh'
             \]
 
-function! F5#run()
+function! s:F5Run()
     if g:F5#AutoSave > 0
         execute "w"
     endif
@@ -40,13 +41,13 @@ function! F5#run()
         endif
     endfor
     if filename != ""
-        call F5#execFile(filename, "sh")
+        call s:F5ExecFile(filename, "sh")
     else
         let current_filetype = tolower(&filetype)
         if has_key(type2env, current_filetype)
-            call F5#execFile("%", current_filetype)
+            call s:F5ExecFile("%", current_filetype)
         else
-            call F5#echo("Unknow file type: " . toupper(current_filetype))
+            call s:F5Echo("Unknow file type: " . toupper(current_filetype))
         endif
     endif
     if g:F5#ReturnFouce > 0
@@ -54,7 +55,7 @@ function! F5#run()
     endif
 endfunction
 
-function! F5#execFile(filename, fileType)
+function! s:F5ExecFile(filename, fileType)
     let type2env = extend(g:F5#Type2EnvBase, g:F5#Type2Env)
     if a:filename == "%"
         let lines = [getline(1)]
@@ -63,7 +64,7 @@ function! F5#execFile(filename, fileType)
     endif
 
     if len(lines) < 1
-        call F5#echo(a:filename . " is empty.")
+        call s:F5Echo(a:filename . " is empty.")
         return
     else
         if match(lines[0], "^#!") > -1
@@ -77,14 +78,14 @@ function! F5#execFile(filename, fileType)
     endif
 endfunction
 
-function! F5#stop()
+function! s:F5Stop()
     execute "AsyncStop"
 endfunction
 
-function! F5#echo(msg)
+function! s:F5Echo(msg)
     redraw
     echomsg "F5: " . a:msg
 endfunction
 
-command！ -nargs=0 F5run call F5#run()
-command！ -nargs=0 F5stop call F5#stop()
+command! -nargs=0 F5run call s:F5Run()
+command! -nargs=0 F5stop call s:F5Stop()
