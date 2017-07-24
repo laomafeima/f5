@@ -82,7 +82,7 @@ function! s:F5ExecFile(filename, fileType)
             execute "AsyncRun " . execStr
             execute "copen"
         else
-            let execStr = get(type2env, a:fileType, "/usr/bin/env bash")  " " . a:filename
+            let execStr = get(type2env, a:fileType, "/usr/bin/env bash") . " " . a:filename
             execute "AsyncRun " . execStr
             execute "copen"
         endif
