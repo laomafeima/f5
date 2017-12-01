@@ -91,8 +91,12 @@ function! s:F5ExecFile(filename, fileType)
 endfunction
 
 function! s:F5Stop()
-    execute "AsyncStop"
-    call s:F5Echo("Stoped")
+    if g:asyncrun_status == "running"
+        execute "AsyncStop"
+        call s:F5Echo("Stoped")
+    else
+        execute "cclose"
+    endif
 endfunction
 
 function! s:F5AutoCloseQF()
@@ -116,6 +120,5 @@ command! -nargs=? F5run call s:F5Run(<args>)
 command! -nargs=0 F5stop call s:F5Stop()
 nnoremap <silent> <F5> :F5run 1<CR>; " F5 运行
 nnoremap <silent> <S-F5> :F5run 0<CR>; " F5 运行
-autocmd FileType qf nmap <silent> <C-C> :F5stop<CR>; " QuickFix 框Ctrl C 停止异步运行
-autocmd FileType qf nmap <silent> <buffer> q :cclose<cr> " 在QuickFix 里面 q 退出
+autocmd FileType qf nmap <silent> <C-C> :F5stop<CR>; " QuickFix 框 Ctrl C 停止异步运行，非运行时会关闭 QuickFix
 autocmd FileType qf wincmd J " QuickFix 出现在最底部
