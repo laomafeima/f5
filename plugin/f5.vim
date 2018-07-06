@@ -5,7 +5,7 @@ if !exists("F5#AutoSave")
 endif
 
 if !exists("F5#AutoCloseQF")
-    let F5#AutoCloseQF = 1 " 当直升生 QuickFix 的时候自动推出
+    let F5#AutoCloseQF = 1 " 当只剩下 QuickFix 的时候自动推出
 endif
 
 if !exists("F5#Type2Env")
@@ -24,9 +24,7 @@ if !exists("F5#RunFile")
     let F5#RunFile = [] " 指定工程化运行文件
 endif
 let F5#RunFileBase = [
-            \'run.sh',
-            \'dev.sh',
-            \'dev_run.sh'
+            \'f5.sh',
             \]
 
 function! s:F5Run(...)
@@ -118,7 +116,4 @@ endfunction
 
 command! -nargs=? F5run call s:F5Run(<args>)
 command! -nargs=0 F5stop call s:F5Stop()
-nnoremap <silent> <F5> :F5run 1<CR>; " F5 运行
-nnoremap <silent> <S-F5> :F5run 0<CR>; " F5 运行
-autocmd FileType qf nmap <silent> <C-C> :F5stop<CR>; " QuickFix 框 Ctrl C 停止异步运行，非运行时会关闭 QuickFix
 autocmd FileType qf wincmd J " QuickFix 出现在最底部
