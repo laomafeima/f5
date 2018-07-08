@@ -12,13 +12,14 @@ if !exists("F5#Type2Env")
     let F5#Type2Env = {} " 添加或者覆盖脚本运行环境
 endif
 let F5#Type2EnvBase = {
-    \'python': '/usr/bin/env python',
+    \'python': '/usr/bin/env python3',
     \'lua': '/usr/bin/env lua',
     \'ruby': '/usr/bin/env ruby',
     \'php': '/usr/bin/env php',
     \'go': '/usr/bin/env go run',
     \'sh': '/usr/bin/env bash', 
-    \'javascript': '/usr/bin/env node'
+    \'javascript': '/usr/bin/env node',
+    \'rust': 'cargo run'
     \}
 if !exists("F5#RunFile")
     let F5#RunFile = [] " 指定工程化运行文件
@@ -33,7 +34,7 @@ function! s:F5Run(...)
     else
         let returnFouce = 1
     endif
-    if g:F5#AutoSave > 0
+    if g:F5#AutoSave > 0 && bufname("%") != ""
         execute "w"
     endif
 
