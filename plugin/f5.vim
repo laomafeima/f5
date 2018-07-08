@@ -8,9 +8,18 @@ if !exists("F5#AutoCloseQF")
     let F5#AutoCloseQF = 1 " 当只剩下 QuickFix 的时候自动推出
 endif
 
+if !exists("F5#FouceCurrentWin")
+    let F5#FouceCurrentWin = 1 " 运行的时候焦点依然在当前文件
+endif
+
+if !exists("F5#AlwaysBottom")
+    let F5#AlwaysBottom = 1 " 运行的时候焦点依然在当前文件
+endif
+
 if !exists("F5#Type2Env")
     let F5#Type2Env = {} " 添加或者覆盖脚本运行环境
 endif
+
 let F5#Type2EnvBase = {
     \'python': '/usr/bin/env python3',
     \'lua': '/usr/bin/env lua',
@@ -29,10 +38,10 @@ let F5#RunFileBase = [
             \]
 
 function! s:F5Run(...)
-    if a:0 > 0
-        let returnFouce = a:1
+    if a:0 == "self"
+        let runSelf = 1
     else
-        let returnFouce = 1
+        let runSelf = 0
     endif
     if g:F5#AutoSave > 0 && bufname("%") != ""
         execute "w"
@@ -48,7 +57,7 @@ function! s:F5Run(...)
             break
         endif
     endfor
-    if filename != ""
+    if filename != "" && runSelf > 0
         call s:F5ExecFile(filename, "sh")
     else
         let current_filetype = tolower(&filetype)
@@ -58,10 +67,11 @@ function! s:F5Run(...)
             call s:F5Echo("Unknow file type: " . toupper(current_filetype))
         endif
     endif
-    if returnFouce > 0
+    if g:F5#FouceCurrentWin > 0
         execute winid . "wincmd w"
     endif
 endfunction
+
 
 function! s:F5ExecFile(filename, fileType)
     let type2env = extend(g:F5#Type2EnvBase, g:F5#Type2Env)
@@ -115,6 +125,9 @@ function! s:F5Echo(msg)
     echomsg "F5: " . a:msg
 endfunction
 
-command! -nargs=? F5run call s:F5Run(<args>)
-command! -nargs=0 F5stop call s:F5Stop()
-autocmd FileType qf wincmd J " QuickFix 出现在最底部
+if g:F5#AlwaysBottom > 0
+    autocmd FileType qf wincmd J " QuickFix 出现在最底部
+endif
+command! -nargs=0 F5Run call s:F5Run()
+command! -nargs=0 F5Stop call s:F5Stop()
+command! -nargs=0 F5RunSelf call s:F5Run("self")
