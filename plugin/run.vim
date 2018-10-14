@@ -74,9 +74,9 @@ endfunction
 
 function! s:HasFileType(typeName)
     if has_key(g:Run#Type2Env, a:typeName)
-        call s:F5ExecFile("%", a:typeName)
+        return 1
     else
-        call s:F5Echo("Unknow file type: " . toupper(a:typeName))
+        return 0
     endif
 endfunction
 
@@ -111,10 +111,15 @@ function! s:RunSelf(filename)
     if g:Run#AutoSave > 0
         call s:AutoSave()
     endif
-    let execStr = s:GetExecStr(s:GetFileType(), a:filename)
-    call s:ExecFile(execStr)
-    if g:Run#FouceCurrentWin > 0
-        execute winid . "wincmd w"
+    let typeName = s:GetFileType()
+    if s:HasFileType(typeName)
+        let execStr = s:GetExecStr(typeName, a:filename)
+        call s:ExecFile(execStr)
+        if g:Run#FouceCurrentWin > 0
+            execute winid . "wincmd w"
+        endif
+    else
+        call s:RunEcho("Unknow file type: " . toupper(typeName))
     endif
 endfunction
 
