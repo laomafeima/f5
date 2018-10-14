@@ -1,2 +1,3 @@
-# f5
-Vim 插件，支持一键运行，支持单个文件和项目运行
+# Run.vim
+
+Run.vim is a Vim plugin that runs code.
