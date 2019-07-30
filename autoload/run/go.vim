@@ -31,7 +31,11 @@ endfunction
 
 function! s:Go.Debug(args) dict
     let project = split(getcwd(), '/')[-1]
-    execute "!" . self.env . " build -gcflags \"-N -l\" -o " . project . "&echo build finish"
+    let buildStr = "!echo \"Please wait while compiling.\";" .
+                \self.env . " build -gcflags \"-N -l\" -o " . project .
+                \";echo \"Compiled.\""
+    call run#util#RunEcho(buildStr)
+    execute buildStr
     execute ":cclose"
     execute ":packadd termdebug"
     execute ":Termdebug " . project

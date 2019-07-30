@@ -1,3 +1,9 @@
+function! s:NotSupportLang(lang)
+    let msg = printf("Does not support current language type:[%s].",
+                \toupper(a:lang))
+    call run#util#RunEchoWarn(msg)
+endfunction
+
 function! s:Run(...)
     let winid = winnr()
     if g:Run#AutoSave > 0
@@ -10,7 +16,7 @@ function! s:Run(...)
     endif
     let runner = run#factory#GetRuner(runnerType)
     if empty(runner)
-        call run#util#RunEchoErr("Language [" . runnerType . "] don`t config.")
+        call s:NotSupportLang(runnerType)
     else
         call runner.Run(a:000)
     endif
@@ -31,7 +37,7 @@ function! s:RunTest(...)
     endif
     let runner = run#factory#GetRuner(runnerType)
     if empty(runner)
-        call run#util#RunEchoErr("Language [" . runnerType . "] don`t config.")
+        call s:NotSupportLang(runnerType)
     else
         call runner.Test(a:000)
     endif
@@ -48,7 +54,7 @@ function! s:RunFile(...)
     
     let runner = run#factory#GetRuner(run#util#GetFileType())
     if empty(runner)
-        call run#util#RunEchoErr("Language [" . runnerType . "] don`t config.")
+        call s:NotSupportLang(runnerType)
     else
         call runner.Run(a:000)
     endif
@@ -64,7 +70,7 @@ function! s:RunDebug(...)
     
     let runner = run#factory#GetRuner(run#util#GetFileType())
     if empty(runner)
-        call run#util#RunEchoErr("Language [" . runnerType . "] don`t config.")
+        call s:NotSupportLang(run#util#GetFileType())
     else
         call runner.Debug(a:000)
     endif
@@ -80,7 +86,7 @@ function! s:RunBuild(...)
     endif
     let runner = run#factory#GetRuner(runnerType)
     if empty(runner)
-        call run#util#RunEchoErr("Language [" . runnerType . "] don`t config.")
+        call s:NotSupportLang(runnerType)
     else
         call runner.Build(a:000)
     endif
@@ -93,7 +99,7 @@ function! s:RunClean(...)
     endif
     let runner = run#factory#GetRuner(runnerType)
     if empty(runner)
-        call run#util#RunEchoErr("Language [" . runnerType . "] don`t config.")
+        call s:NotSupportLang(runnerType)
     else
         call runner.Clean(a:000)
     endif

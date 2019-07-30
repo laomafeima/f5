@@ -1,11 +1,16 @@
 function! run#util#RunEcho(msg)
     redraw
-    echomsg "Run: " . a:msg
+    echomsg "run.vim : " . a:msg
+endfunction
+
+function! run#util#RunEchoWarn(msg)
+    redraw
+    echohl WarningMsg | echomsg "[Warn] run.vim : " . a:msg| echohl None
 endfunction
 
 function! run#util#RunEchoErr(msg)
     redraw
-    echoerr "Run Error: " . a:msg
+    echoerr "[Error] run.vim : " . a:msg
 endfunction
 
 
