@@ -12,19 +12,19 @@ function! s:Go.Run(args) dict
     else
         let args = a:args
     endif
-    let execStr = self.env . " run " . join(args, " ")
+    let execStr = run#util#strTrim(self.env . " run " . join(args, " "))
     call run#util#RunEcho(execStr)
     call run#util#ExecFile(execStr)
 endfunction
 
 function! s:Go.Build(args) dict
-    let execStr = self.env . " build " . join(a:args, " ")
+    let execStr = run#util#strTrim(self.env . " build " . join(a:args, " "))
     call run#util#RunEcho(execStr)
     call run#util#ExecFile(execStr)
 endfunction
 
 function! s:Go.Clean(args) dict
-    let execStr = self.env . " clean " . join(a:args, " ")
+    let execStr = run#util#strTrim(self.env . " clean " . join(a:args, " "))
     call run#util#RunEcho(execStr)
     call run#util#ExecFile(execStr)
 endfunction
@@ -37,11 +37,11 @@ function! s:Go.Debug(args) dict
     call run#util#RunEcho(buildStr)
     execute buildStr
     execute ":packadd termdebug"
-    execute ":Termdebug " . project . " " . join(a:args, " ")
+    execute run#util#strTrim(":Termdebug " . project . " " . join(a:args, " "))
 endfunction
 
 function! s:Go.Test(args) dict
-    let execStr = self.env . " test " . join(a:args, " ")
+    let execStr = run#util#strTrim(self.env . " test " . join(a:args, " "))
     call run#util#RunEcho(execStr)
     call run#util#ExecFile(execStr)
 endfunction

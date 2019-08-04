@@ -7,19 +7,20 @@ function! run#cargo#GetRuner()
 endfunction
 
 function! s:Cargo.Run(args) dict
-    let execStr = self.cargo. " run " . join(a:args, " ")
+    let execStr = run#util#strTrim(trim(self.cargo. " run " .
+                \join(a:args, " ")))
     call run#util#RunEcho(execStr)
     call run#util#ExecFile(execStr)
 endfunction
 
 function! s:Cargo.Build(args) dict
-    let execStr = self.cargo. " build " . join(a:args, " ")
+    let execStr = run#util#strTrim(self.cargo. " build " . join(a:args, " "))
     call run#util#RunEcho(execStr)
     call run#util#ExecFile(execStr)
 endfunction
 
 function! s:Cargo.Clean(args) dict
-    let execStr = self.cargo. " clean " . join(a:args, " ")
+    let execStr = run#util#strTrim(self.cargo. " clean " . join(a:args, " "))
     call run#util#RunEcho(execStr)
     call run#util#ExecFile(execStr)
 endfunction
@@ -31,11 +32,12 @@ function! s:Cargo.Debug(args) dict
     call run#util#RunEcho(buildStr)
     execute buildStr
     execute ":packadd termdebug"
-    execute ":Termdebug target/debug/" . project . " " . join(a:args, " ")
+    execute run#util#strTrim(":Termdebug target/debug/" . project . " " .
+                \join(a:args, " "))
 endfunction
 
 function! s:Cargo.Test(args) dict
-    let execStr = self.cargo. " test " . join(a:args, " ")
+    let execStr = run#util#strTrim(self.cargo. " test " . join(a:args, " "))
     call run#util#RunEcho(execStr)
     call run#util#ExecFile(execStr)
 endfunction

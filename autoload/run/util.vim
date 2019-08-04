@@ -91,3 +91,7 @@ function! run#util#NotSupportLang(lang)
     call run#util#RunEchoWarn(msg)
 endfunction
 
+
+function! run#util#strTrim(str) abort
+    return substitute(a:str,'\%#=1^[[:space:]]\+\|[[:space:]]\+$', '', 'g')
+endfunction

@@ -5,19 +5,19 @@ function! run#make#GetRuner()
 endfunction
 
 function! s:Make.Run(args) dict
-    let execStr = "make " . join(a:args, " ")
+    let execStr = run#util#strTrim("make " . join(a:args, " "))
     call run#util#RunEcho(execStr)
     call run#util#ExecFile(execStr)
 endfunction
 
 function! s:Make.Build(args) dict
-    let execStr = "make build " . join(a:args, " ")
+    let execStr = run#util#strTrim("make build " . join(a:args, " "))
     call run#util#RunEcho(execStr)
     call run#util#ExecFile(execStr)
 endfunction
 
 function! s:Make.Clean(args) dict
-    let execStr = "make clean " . join(a:args, " ")
+    let execStr = run#util#strTrim("make clean " . join(a:args, " "))
     call run#util#RunEcho(execStr)
     call run#util#ExecFile(execStr)
 endfunction
@@ -29,11 +29,11 @@ function! s:Make.Debug(args) dict
     call run#util#RunEcho(buildStr)
     execute buildStr
     execute ":packadd termdebug"
-    execute ":Termdebug " . project . " " . join(a:args, " ")
+    execute run#util#strTrim(":Termdebug " . project . " " . join(a:args, " "))
 endfunction
 
 function! s:Make.Test(args) dict
-    let execStr = "make test " . join(a:args, " ")
+    let execStr = run#util#strTrim("make test " . join(a:args, " "))
     call run#util#RunEcho(execStr)
     call run#util#ExecFile(execStr)
 endfunction
