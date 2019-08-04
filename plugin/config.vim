@@ -14,6 +14,21 @@ if !exists("Run#AlwaysBottom")
     let Run#AlwaysBottom = 1 " 运行的时候输出窗口出现在底部
 endif
 
+if !exists("Run#CargoRootFile")
+    let Run#CargoRootFile = ["Cargo.toml"] " Cargo 项目的根目录标记
+endif
+
+if !exists("Run#GoRootFile")
+    let Run#GoRootFile = ["go.mod", "go.sum"] " Golang 项目的根目录标记
+endif
+
+if !exists("Run#MakeRootFile")
+    let Run#MakeRootFile = [
+                \'Makefile',
+                \'makefile',
+                \'GNUmakefile'
+                \] " 指定工程化运行文件
+endif
 
 let Run#Type2EnvBase = {
     \'python': '/usr/bin/env python3',
@@ -32,11 +47,6 @@ else
     let Run#Type2Env = extend(g:Run#Type2EnvBase, g:Run#Type2Env)
 endif
 
-let Run#Makefiles = [
-            \'Makefile',
-            \'makefile',
-            \'GNUmakefile'
-            \] " 指定工程化运行文件
 
 if g:Run#AutoCloseQF > 0
     au BufEnter * call run#util#AutoCloseQF()

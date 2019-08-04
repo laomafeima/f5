@@ -1,118 +1,106 @@
-function! s:NotSupportLang(lang)
-    let msg = printf("Does not support current language type:[%s].",
-                \toupper(a:lang))
-    call run#util#RunEchoWarn(msg)
-endfunction
+let s:runVim = {
+            \"currentWinid": 0,
+            \}
 
-function! s:Run(...)
-    let winid = winnr()
+function! s:runVim.Before() dict
+    let self.currentWinid = winnr()
     if g:Run#AutoSave > 0
         call run#util#AutoSave()
     endif
-    
+endfunction
+
+
+function! s:runVim.After() dict
+    if g:Run#FouceCurrentWin > 0 && self.currentWinid > 0
+        let self.currentWinid = 0
+        execute self.currentWinid . "wincmd w"
+    endif
+endfunction
+
+function! s:runVim.GetRunner(...) dict
     let runnerType = run#util#GetFileType()
-    if run#util#HasMakefile()
-        let runnerType = "make"
+    if len(a:000) > 0 " 如果有指定类型就优先选择有类型的
+        let runnerType = a:000[0]
+    else
+        if run#util#HasRootFile(g:Run#GoRootFile)
+            let runnerType = "go"
+        endif
+        if run#util#HasRootFile(g:Run#CargoRootFile)
+            let runnerType = "cargo"
+        endif
+        if run#util#HasRootFile(g:Run#MakeRootFile)
+            let runnerType = "make"
+        endif
     endif
     let runner = run#factory#GetRuner(runnerType)
     if empty(runner)
-        call s:NotSupportLang(runnerType)
-    else
+        call run#util#NotSupportLang(runnerType)
+    endif
+    return runner
+endfunction
+
+
+
+function! s:runVim.Run(...) dict
+    call self.Before()
+    let runner = self.GetRunner()
+    if !empty(runner)
         call runner.Run(a:000)
     endif
-    if g:Run#FouceCurrentWin > 0
-        execute winid . "wincmd w"
-    endif
+    call self.After()
 endfunction
 
-function! s:RunTest(...)
-    let winid = winnr()
-    if g:Run#AutoSave > 0
-        call run#util#AutoSave()
-    endif
-    
-    let runnerType = run#util#GetFileType()
-    if run#util#HasMakefile()
-        let runnerType = "make"
-    endif
-    let runner = run#factory#GetRuner(runnerType)
-    if empty(runner)
-        call s:NotSupportLang(runnerType)
-    else
+function! s:runVim.RunTest(...) dict
+    call self.Before()
+
+    let runner = self.GetRunner()
+    if !empty(runner)
         call runner.Test(a:000)
     endif
-    if g:Run#FouceCurrentWin > 0
-        execute winid . "wincmd w"
-    endif
+    call self.After()
 endfunction
 
-function! s:RunFile(...)
-    let winid = winnr()
-    if g:Run#AutoSave > 0
-        call run#util#AutoSave()
-    endif
+function! s:runVim.RunFile(...) dict
+    call self.Before()
     
-    let runner = run#factory#GetRuner(run#util#GetFileType())
-    if empty(runner)
-        call s:NotSupportLang(runnerType)
-    else
+    let runner = self.GetRunner(run#util#GetFileType())
+    if !empty(runner)
         call runner.Run(a:000)
     endif
-    if g:Run#FouceCurrentWin > 0
-        execute winid . "wincmd w"
-    endif
+    call self.After()
 endfunction
 
-function! s:RunDebug(...)
-    if g:Run#AutoSave > 0
-        call run#util#AutoSave()
-    endif
-    
-    let runner = run#factory#GetRuner(run#util#GetFileType())
-    if empty(runner)
-        call s:NotSupportLang(run#util#GetFileType())
-    else
+function! s:runVim.RunDebug(...) dict
+    call self.Before()
+    let runner = self.GetRunner()
+    if !empty(runner)
         call runner.Debug(a:000)
     endif
+    call self.After()
 endfunction
 
-function! s:RunBuild(...)
-    if g:Run#AutoSave > 0
-        call run#util#AutoSave()
-    endif
-    let runnerType = run#util#GetFileType()
-    if run#util#HasMakefile()
-        let runnerType = "make"
-    endif
-    let runner = run#factory#GetRuner(runnerType)
-    if empty(runner)
-        call s:NotSupportLang(runnerType)
-    else
+function! s:runVim.RunBuild(...) dict
+    call self.Before()
+    let runner = self.GetRunner()
+    if !empty(runner)
         call runner.Build(a:000)
     endif
+    call self.After()
 endfunction
 
-function! s:RunClean(...)
-    let runnerType = run#util#GetFileType()
-    if run#util#HasMakefile()
-        let runnerType = "make"
-    endif
-    let runner = run#factory#GetRuner(runnerType)
-    if empty(runner)
-        call s:NotSupportLang(runnerType)
-    else
+function! s:runVim.RunClean(...) dict
+    let runner = self.GetRunner()
+    if !empty(runner)
         call runner.Clean(a:000)
     endif
 endfunction
 
-
-
-command! -nargs=? Run call s:Run(<f-args>)
-command! -nargs=? RunFile call s:RunFile(<f-args>)
-command! -nargs=? RunDebug call s:RunDebug(<f-args>)
-command! -nargs=? RunBuild call s:RunBuild(<f-args>)
-command! -nargs=? RunClean call s:RunClean(<f-args>)
-command! -nargs=? RunTest call s:RunTest(<f-args>)
+command! -nargs=? Run call s:runVim.Run(<f-args>)
+command! -nargs=? RunFile call s:runVim.RunFile(<f-args>)
+command! -nargs=? RunDebug call s:runVim.RunDebug(<f-args>)
+command! -nargs=? RunBuild call s:runVim.RunBuild(<f-args>)
+command! -nargs=? RunClean call s:runVim.RunClean(<f-args>)
+command! -nargs=? RunTest call s:runVim.RunTest(<f-args>)
 command! -nargs=0 RunStop call run#util#RunStop()
 
 command! -nargs=? R Run <f-args>

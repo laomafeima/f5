@@ -20,8 +20,8 @@ function! run#util#AutoSave()
     endif
 endfunction
 
-function! run#util#HasMakefile()
-    for i in g:Run#Makefiles
+function! run#util#HasRootFile(fileList)
+    for i in a:fileList
         if filereadable(getcwd() . '/' . i)
             return 1
         endif
@@ -84,3 +84,10 @@ function! run#util#RunStop()
         execute "cclose"
     endif
 endfunction
+
+function! run#util#NotSupportLang(lang)
+    let msg = printf("Does not support current language type:[%s].",
+                \toupper(a:lang))
+    call run#util#RunEchoWarn(msg)
+endfunction
+
