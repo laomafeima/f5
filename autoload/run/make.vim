@@ -23,9 +23,13 @@ function! s:Make.Clean(args) dict
 endfunction
 
 function! s:Make.Debug(args) dict
-    let execStr = "make debug " . join(a:args, " ")
-    call run#util#RunEcho(execStr)
-    call run#util#ExecFile(execStr)
+    let project = split(getcwd(), '/')[-1]
+    let buildStr = "!echo \"Please wait while compiling.\";make debug " .
+                \project . ";echo \"Compiled.\""
+    call run#util#RunEcho(buildStr)
+    execute buildStr
+    execute ":packadd termdebug"
+    execute ":Termdebug " . project . " " . join(a:args, " ")
 endfunction
 
 function! s:Make.Test(args) dict

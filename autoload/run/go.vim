@@ -36,9 +36,8 @@ function! s:Go.Debug(args) dict
                 \";echo \"Compiled.\""
     call run#util#RunEcho(buildStr)
     execute buildStr
-    execute ":cclose"
     execute ":packadd termdebug"
-    execute ":Termdebug " . project
+    execute ":Termdebug " . project . " " . join(a:args, " ")
 endfunction
 
 function! s:Go.Test(args) dict

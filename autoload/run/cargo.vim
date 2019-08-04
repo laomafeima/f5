@@ -30,9 +30,8 @@ function! s:Cargo.Debug(args) dict
                 \self.cargo. " build;echo \"Compiled.\""
     call run#util#RunEcho(buildStr)
     execute buildStr
-    execute ":cclose"
     execute ":packadd termdebug"
-    execute ":Termdebug target/debug/" . project
+    execute ":Termdebug target/debug/" . project . " " . join(a:args, " ")
 endfunction
 
 function! s:Cargo.Test(args) dict
