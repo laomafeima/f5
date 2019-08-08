@@ -1,6 +1,6 @@
 let s:Python = {
-            \"env": run#util#GetEnv("python"),
-            \"test": run#util#GetEnv("python_test"),
+            \"env": g:Run#PythonRunner,
+            \"test": g:Run#PythonTestRunner,
             \}
 
 function! run#python#GetRuner()

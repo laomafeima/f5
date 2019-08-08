@@ -1,5 +1,6 @@
 let s:runVim = {
             \"currentWinid": 0,
+            \"needMake": 1,
             \}
 
 function! s:runVim.Before() dict
@@ -17,7 +18,7 @@ function! s:runVim.After() dict
     endif
 endfunction
 
-function! s:runVim.GetRunner(...) dict
+function! s:runVim.GetProjectType(...) dict
     let runnerType = run#util#GetFileType()
     if len(a:000) > 0 " 如果有指定类型就优先选择有类型的
         let runnerType = a:000[0]
@@ -28,18 +29,22 @@ function! s:runVim.GetRunner(...) dict
         if run#util#HasRootFile(g:Run#CargoRootFile)
             let runnerType = "cargo"
         endif
-        if run#util#HasRootFile(g:Run#MakeRootFile)
+        if self.needMake && run#util#HasRootFile(g:Run#MakeRootFile)
             let runnerType = "make"
         endif
     endif
+    return runnerType
+endfunction
+
+function! s:runVim.GetRunner(...) dict
+    let runnerType = len(a:000) ? self.GetProjectType(a:000) : 
+                \self.GetProjectType()
     let runner = run#factory#GetRuner(runnerType)
     if empty(runner)
         call run#util#NotSupportLang(runnerType)
     endif
     return runner
 endfunction
-
-
 
 function! s:runVim.Run(...) dict
     call self.Before()
@@ -71,12 +76,16 @@ function! s:runVim.RunFile(...) dict
 endfunction
 
 function! s:runVim.RunDebug(...) dict
+    if !g:Run#DebugMakeFrist
+        let self.needMake = 0
+    endif
     call self.Before()
     let runner = self.GetRunner()
     if !empty(runner)
         call runner.Debug(a:000)
     endif
     call self.After()
+    let self.needMake = 1
 endfunction
 
 function! s:runVim.RunBuild(...) dict

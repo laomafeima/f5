@@ -7,6 +7,9 @@ function! run#factory#GetRuner(langType)
         return run#make#GetRuner()
     elseif a:langType == "go"
         return run#go#GetRuner()
+    elseif has_key(g:Run#ScriptRunner, a:langType)
+        return run#script#GetRuner()
     else
         return {}
+    endif
 endfunction

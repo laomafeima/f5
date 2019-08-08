@@ -34,17 +34,8 @@ function! run#util#GetFileType()
     return current_filetype
 endfunction
 
-
-function! run#util#HasFileType(typeName)
-    if has_key(g:Run#Type2Env, a:typeName)
-        return 1
-    else
-        return 0
-    endif
-endfunction
-
-function! run#util#GetEnv(typeName)
-    return get(g:Run#Type2Env, a:typeName)
+function! run#util#GetScriptRunner(typeName)
+    return get(g:Run#ScriptRunner, a:typeName)
 endfunction
 
 function! run#util#GetSheBang(filename)

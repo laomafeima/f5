@@ -1,5 +1,5 @@
 let s:Go = {
-            \"env": run#util#GetEnv("go"),
+            \"env": "go",
             \}
 
 function! run#go#GetRuner()
