@@ -7,8 +7,7 @@ function! run#cargo#GetRuner()
 endfunction
 
 function! s:Cargo.Run(args) dict
-    let execStr = run#util#strTrim(trim(self.cargo. " run " .
-                \join(a:args, " ")))
+    let execStr = run#util#strTrim(self.cargo. " run " . join(a:args, " "))
     call run#util#RunEcho(execStr)
     call run#util#ExecFile(execStr)
 endfunction
