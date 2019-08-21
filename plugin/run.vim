@@ -13,8 +13,8 @@ endfunction
 
 function! s:runVim.After() dict
     if g:Run#FouceCurrentWin > 0 && self.currentWinid > 0
-        let self.currentWinid = 0
         execute self.currentWinid . "wincmd w"
+        let self.currentWinid = 0
     endif
 endfunction
 
