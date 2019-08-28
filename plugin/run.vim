@@ -104,17 +104,10 @@ function! s:runVim.RunClean(...) dict
     endif
 endfunction
 
-command! -nargs=? Run call s:runVim.Run(<f-args>)
-command! -nargs=? RunFile call s:runVim.RunFile(<f-args>)
-command! -nargs=? RunDebug call s:runVim.RunDebug(<f-args>)
-command! -nargs=? RunBuild call s:runVim.RunBuild(<f-args>)
-command! -nargs=? RunClean call s:runVim.RunClean(<f-args>)
-command! -nargs=? RunTest call s:runVim.RunTest(<f-args>)
-command! -nargs=0 RunStop call run#util#RunStop()
-
-command! -nargs=? R Run <f-args>
-command! -nargs=? RF RunFile <f-args>
-command! -nargs=? D RunDebug <f-args>
-command! -nargs=? B RunBuild <f-args>
-command! -nargs=? C RunClean <f-args>
-command! -nargs=? T RunTest <f-args>
+command! -nargs=? R call s:runVim.Run(<f-args>)
+command! -nargs=? RF call s:runVim.RunFile(<f-args>)
+command! -nargs=? D call s:runVim.RunDebug(<f-args>)
+command! -nargs=? B call s:runVim.RunBuild(<f-args>)
+command! -nargs=? C call s:runVim.RunClean(<f-args>)
+command! -nargs=? T call s:runVim.RunTest(<f-args>)
+command! -nargs=0 RS call run#util#RunStop()
