@@ -37,7 +37,7 @@ function! s:runVim.GetProjectType(...) dict
 endfunction
 
 function! s:runVim.GetRunner(...) dict
-    let runnerType = len(a:000) ? self.GetProjectType(a:000) : 
+    let runnerType = len(a:000) ? self.GetProjectType(a:000[0]) :
                 \self.GetProjectType()
     let runner = run#factory#GetRuner(runnerType)
     if empty(runner)
